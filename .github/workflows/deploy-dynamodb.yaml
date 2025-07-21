@@ -7,9 +7,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      OIDC_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubOIDCRole
+      STACK_NAME: taskly-dynamodb
+      S3_BUCKET: ${{ secrets.SAM_S3_BUCKET }}
+      CFN_EXEC_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/CloudFormationExecRole
 
     steps:
       - name: Checkout source
@@ -23,8 +28,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubOIDCRole
-          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ env.OIDC_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Install AWS SAM CLI
         run: |
@@ -32,4 +37,11 @@ jobs:
 
       - name: Deploy DynamoDB Table with SAM
         run: |
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+          sam deploy \
+            --stack-name $STACK_NAME \
+            --region $AWS_REGION \
+            --s3-bucket $S3_BUCKET \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --role-arn $CFN_EXEC_ROLE \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset
