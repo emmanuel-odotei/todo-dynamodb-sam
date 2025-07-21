@@ -20,8 +20,6 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
-        - AttributeName: createdAt
-          KeyType: RANGE
 
       GlobalSecondaryIndexes:
         - IndexName: StatusIndex
