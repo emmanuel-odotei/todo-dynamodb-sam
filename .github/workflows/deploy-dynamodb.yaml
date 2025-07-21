@@ -44,6 +44,7 @@ jobs:
             --stack-name $STACK_NAME \
             --region $AWS_REGION \
             --s3-bucket $S3_BUCKET \
+            --s3-prefix sam-artifacts \
             --capabilities CAPABILITY_NAMED_IAM \
             --role-arn $CFN_EXEC_ROLE \
             --no-confirm-changeset \
