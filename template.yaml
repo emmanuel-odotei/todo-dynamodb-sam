@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: DynamoDB Table for Taskly Todo App with composite GSIs on status and dueDate
+
+Resources:
+  TodoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TasklyTodoItems
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+        - AttributeName: dueDate
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+
+      GlobalSecondaryIndexes:
+        - IndexName: StatusIndex
+          KeySchema:
+            - AttributeName: status
+              KeyType: HASH
+            - AttributeName: dueDate
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+        - IndexName: DueDateIndex
+          KeySchema:
+            - AttributeName: dueDate
+              KeyType: HASH
+            - AttributeName: status
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+      BillingMode: PAYPERREQUEST
+
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+      Tags:
+        - Key: App
+          Value: Taskly
+
+Outputs:
+  TodoTableName:
+    Description: "DynamoDB Table Name"
+    Value: !Ref TodoTable
+
+  StatusIndexName:
+    Description: "Status GSI Name"
+    Value: "StatusIndex"
+
+  DueDateIndexName:
+    Description: "DueDate GSI Name"
+    Value: "DueDateIndex"
