@@ -44,10 +44,6 @@ Resources:
 
       BillingMode: PAY_PER_REQUEST
 
-      TimeToLiveSpecification:
-        AttributeName: ttl
-        Enabled: true
-
       Tags:
         - Key: App
           Value: Taskly
