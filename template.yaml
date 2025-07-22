@@ -14,6 +14,8 @@ Resources:
           AttributeType: S
         - AttributeName: dueDate
           AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
 
       KeySchema:
         - AttributeName: id
@@ -38,6 +40,15 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+        - IndexName: CreatedAtIndex
+          KeySchema:
+            - AttributeName: createdAt
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
       BillingMode: PAY_PER_REQUEST
 
       Tags:
@@ -56,3 +67,7 @@ Outputs:
   DueDateIndexName:
     Description: "DueDate GSI Name"
     Value: "DueDateIndex"
+
+  CreatedAtIndexName:
+    Description: "CreatedAt GSI Name"
+    Value: "CreatedAtIndex"
