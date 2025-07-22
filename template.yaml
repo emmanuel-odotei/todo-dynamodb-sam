@@ -16,6 +16,8 @@ Resources:
           AttributeType: S
         - AttributeName: createdAt
           AttributeType: S
+        - AttributeName: sortKey
+          AttributeType: S
 
       KeySchema:
         - AttributeName: id
@@ -42,9 +44,9 @@ Resources:
 
         - IndexName: CreatedAtIndex
           KeySchema:
-            - AttributeName: createdAt
+            - AttributeName: sortKey
               KeyType: HASH
-            - AttributeName: id
+            - AttributeName: createdAt
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
